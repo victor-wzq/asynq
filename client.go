@@ -267,6 +267,9 @@ func (c *Client) Close() error {
 // If no ProcessAt or ProcessIn options are provided, the task will be pending immediately.
 func (c *Client) Enqueue(task *Task, opts ...Option) (*TaskInfo, error) {
 	c.mu.Lock()
+	if task.typename == "" {
+		return nil, fmt.Errorf("asynq: invalid typename")
+	}
 	if defaults, ok := c.opts[task.Type()]; ok {
 		opts = append(defaults, opts...)
 	}
